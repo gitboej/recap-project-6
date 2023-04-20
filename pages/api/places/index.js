@@ -7,7 +7,17 @@ export default async function handler(request, response) {
   if (request.method === "GET") {
     const spots = await Spot.find();
     return response.status(200).json(spots);
-  } else {
-    return response.status(405).json({ message: "Method not allowed" });
+  }
+
+  if (request.method === "POST") {
+    try {
+      const spotData = request.body;
+      await Spot.create(spotData);
+
+      return response.status(201).json({ status: "Place created" });
+    } catch (error) {
+      console.log(error);
+      return response.status(400).json({ error: error.message });
+    }
   }
 }
